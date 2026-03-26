@@ -84,6 +84,15 @@
         .animate-pulse-gentle {
             animation: gentle-pulse 3s ease-in-out infinite;
         }
+        
+        @keyframes text-pulse-light {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        }
+        .animate-text-pulse {
+            animation: text-pulse-light 4s ease-in-out infinite;
+        }
+
         @keyframes slide-out {
             0% { opacity: 0; transform: translateY(-20px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -96,18 +105,9 @@
 <body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
 <!-- Top Navigation Bar -->
 <nav class="fixed top-0 w-full z-50 bg-[#fff8f2]/80 dark:bg-[#231a08]/80 backdrop-blur-xl">
-<div class="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto">
+<div class="flex items-center w-full px-8 py-6 max-w-screen-2xl mx-auto justify-center">
 <div class="flex items-center gap-12">
 <span class="text-2xl font-bold tracking-tighter text-[#231a08] dark:text-[#fff8f2]">AYUNN</span>
-<div class="hidden md:flex gap-8 font-['Manrope'] font-medium tracking-tight text-sm">
-<a class="text-[#56423d] hover:text-[#C05E42] transition-colors duration-300" href="#">Shop</a>
-<a class="text-[#56423d] hover:text-[#C05E42] transition-colors duration-300" href="#">About</a>
-<a class="text-[#56423d] hover:text-[#C05E42] transition-colors duration-300" href="#">Philosophy</a>
-</div>
-</div>
-<div class="flex items-center gap-6">
-<button class="material-symbols-outlined text-[#C05E42] hover:scale-95 duration-200">shopping_bag</button>
-<button class="material-symbols-outlined text-[#C05E42] hover:scale-95 duration-200">person</button>
 </div>
 </div>
 </nav>
@@ -117,26 +117,35 @@
 <div class="absolute inset-0 opacity-20 pointer-events-none">
 <img alt="abstract macro photography of dark volcanic sand ripples with soft dramatic side lighting creating deep shadows" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL6Fdo40DIumur8EGl2rIAqWg_4KdNEStGGleHIaYbpYfmBehPlp3v7dscXMeO5RSARCbWoXdnA_e8MN-lo4LMDoQe2d3JAaimftds7sV7BuXcIkaEBXge1E8PVYIdyT2KAutAREps7QHQ4z6w5vQ7RZAv6XXTX7nn4kgoJtVYnexPptKFpUW64TbMJQsTNuAHcjLXuSJJnj98oq1h1OeuFsb1zQgzPFAYXY3rADF90Hw4_8d2vhH4z_Jx_gKP3--esDemKqppRXo"/>
 </div>
-<div class="z-10 text-center max-w-4xl space-y-4">
-<div class="inline-block px-4 py-1 border border-outline-variant/20 rounded-full mb-8">
-<span class="font-label text-xs uppercase tracking-[0.2em] text-surface-container-low">The Ritual of Being</span>
-</div>
+<div class="z-10 text-center max-w-4xl">
 <h1 class="text-surface font-headline text-6xl md:text-8xl lg:text-9xl tracking-tighter leading-none min-h-[1.1em] font-extralight" id="typing-text"></h1>
-<div class="opacity-0 space-y-4" id="hero-subtitles">
-<h2 class="text-primary font-headline text-3xl md:text-5xl tracking-tight italic font-light">to see the light within you</h2>
-<p class="text-surface-variant/60 font-body text-xs md:text-sm tracking-[0.4em] uppercase pt-4">
-                        DEFINED BY SILENCE • DESIGNED FOR BALANCE
-                    </p>
+<div class="opacity-0 mt-2" id="hero-subtitles">
+<h2 class="text-primary font-headline text-xl md:text-3xl tracking-tight italic font-light mx-auto inline-block" style="display: inline-block;">to see the light within you</h2>
 </div>
 </div>
 <script>
                 const words = ["Ayurveda", "Ayurvedic", "AYUNN"];
+                const ritualWords = ["Ayurveda", "Ayurvedic", "AYUNN", "The Ritual of Being"];
                 const el = document.getElementById('typing-text');
+                const ritualEl = document.getElementById('ritual-text');
                 const subContainer = document.getElementById('hero-subtitles');
+                
                 let wordIndex = 0;
                 let charIndex = 0;
                 let isDeleting = false;
                 let typingSpeed = 60;
+                let ritualWordIndex = 0;
+
+                function rotateRitual() {
+                    ritualEl.style.opacity = '0';
+                    setTimeout(() => {
+                        ritualWordIndex = (ritualWordIndex + 1) % ritualWords.length;
+                        ritualEl.textContent = ritualWords[ritualWordIndex];
+                        ritualEl.style.opacity = '1';
+                    }, 500);
+                }
+
+                const ritualInterval = setInterval(rotateRitual, 4000);
 
                 function type() {
                     const currentWord = words[wordIndex];
@@ -153,6 +162,9 @@
                     if (!isDeleting && charIndex === currentWord.length) {
                         if (wordIndex === words.length - 1) {
                             el.classList.add('animate-pulse-gentle');
+                            clearInterval(ritualInterval);
+                            ritualEl.textContent = "The Ritual of Being";
+                            ritualEl.classList.add('animate-text-pulse');
                             setTimeout(() => {
                                 subContainer.classList.add('animate-slide-out');
                             }, 300);
