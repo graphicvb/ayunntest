@@ -100,6 +100,32 @@
         .animate-slide-out {
             animation: slide-out 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        /* Scroll driven animation classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active .stagger-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Delays for staggered items */
+        .reveal.active .stagger-1 { transition-delay: 0.1s; }
+        .reveal.active .stagger-2 { transition-delay: 0.2s; }
+        .reveal.active .stagger-3 { transition-delay: 0.3s; }
+        .reveal.active .stagger-4 { transition-delay: 0.4s; }
+        .reveal.active .stagger-5 { transition-delay: 0.5s; }
     </style>
 </head>
 <body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
@@ -112,7 +138,7 @@
 </div>
 </nav>
 <main>
-<!-- Section 1: Hero Section -->
+<!-- Section 1: Hero Section (Initial state handled by JS) -->
 <section class="min-h-screen bg-on-surface flex flex-col justify-center items-center relative overflow-hidden px-6">
 <div class="absolute inset-0 opacity-20 pointer-events-none">
 <img alt="abstract macro photography of dark volcanic sand ripples with soft dramatic side lighting creating deep shadows" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL6Fdo40DIumur8EGl2rIAqWg_4KdNEStGGleHIaYbpYfmBehPlp3v7dscXMeO5RSARCbWoXdnA_e8MN-lo4LMDoQe2d3JAaimftds7sV7BuXcIkaEBXge1E8PVYIdyT2KAutAREps7QHQ4z6w5vQ7RZAv6XXTX7nn4kgoJtVYnexPptKFpUW64TbMJQsTNuAHcjLXuSJJnj98oq1h1OeuFsb1zQgzPFAYXY3rADF90Hw4_8d2vhH4z_Jx_gKP3--esDemKqppRXo"/>
@@ -137,12 +163,14 @@
                 let ritualWordIndex = 0;
 
                 function rotateRitual() {
-                    ritualEl.style.opacity = '0';
-                    setTimeout(() => {
-                        ritualWordIndex = (ritualWordIndex + 1) % ritualWords.length;
-                        ritualEl.textContent = ritualWords[ritualWordIndex];
-                        ritualEl.style.opacity = '1';
-                    }, 500);
+                    if(ritualEl) {
+                        ritualEl.style.opacity = '0';
+                        setTimeout(() => {
+                            ritualWordIndex = (ritualWordIndex + 1) % ritualWords.length;
+                            ritualEl.textContent = ritualWords[ritualWordIndex];
+                            ritualEl.style.opacity = '1';
+                        }, 500);
+                    }
                 }
 
                 const ritualInterval = setInterval(rotateRitual, 4000);
@@ -163,8 +191,10 @@
                         if (wordIndex === words.length - 1) {
                             el.classList.add('animate-pulse-gentle');
                             clearInterval(ritualInterval);
-                            ritualEl.textContent = "The Ritual of Being";
-                            ritualEl.classList.add('animate-text-pulse');
+                            if(ritualEl) {
+                                ritualEl.textContent = "The Ritual of Being";
+                                ritualEl.classList.add('animate-text-pulse');
+                            }
                             setTimeout(() => {
                                 subContainer.classList.add('animate-slide-out');
                             }, 300);
@@ -191,34 +221,37 @@
 </div>
 </section>
 <!-- Section 2: Ayur | Veda Cohesive Layout -->
-<section class="py-32 px-8 max-w-screen-2xl mx-auto">
-<div class="relative rounded-2xl overflow-hidden shadow-2xl group min-h-[800px] flex items-center">
+<section class="py-32 px-8 max-w-screen-2xl mx-auto reveal">
+<div class="relative rounded-2xl overflow-hidden shadow-2xl group min-h-[900px] flex items-center">
 <img alt="serene high-end ayurvedic spa setting with warm wooden textures soft sunlight through linen curtains and bronze vessels" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIFx_QN8xq425Ax_ReEw7cvtk3QkETZuUM9riFLCbPYUJNOzVUfCOlnnm89SLlwTNHHW83jZd8JdfOSP0dp-RfqY4sOpJMlPPqc-BNHsRZuIz17c0mxMwGkOK0tg1b9R55aDxnoIt1FPD4S8mjNirWHV4ucJjfuuN7k9881VN6aKd0jV_LO0TQuVA4yXfDTw9UcJkY389o4_M5h9-QPUBEjodLzxDsEFBCt2tzV7tCduw8RbHS1GIVUbOk3jyq1Bwaiffn1xVDZ-I"/>
 <div class="absolute inset-0 bg-on-surface/50 group-hover:bg-on-surface/40 transition-colors duration-700"></div>
 <div class="relative z-10 w-full max-w-5xl mx-auto px-6 py-20 text-center flex flex-col items-center">
-<h2 class="text-surface font-headline text-5xl md:text-7xl font-light tracking-[0.3em] uppercase mb-10 opacity-90">AYURVEDA</h2>
-<p class="text-surface font-body text-lg md:text-xl leading-relaxed mb-24 max-w-3xl font-light opacity-90">
-                        AYUNN was inspired by a philosophy where balance defines well-being — where care is not about doing more, but doing what is necessary. Where life, body, and mind are treated as one system. This idea of balance became the foundation of AYUNN.
+<h2 class="text-surface font-headline text-5xl md:text-7xl font-light tracking-[0.3em] uppercase mb-10 opacity-90 stagger-item stagger-1">AYUNN</h2>
+<p class="text-surface font-body text-lg md:text-xl leading-relaxed mb-20 max-w-3xl font-light opacity-90 stagger-item stagger-2">AYUNN was inspired by a philosophy where balance defines well-being — where care is not about doing more, but doing what is necessary. Where life, body, and mind are treated as one system. This idea of balance became the foundation of AYUNN.</p>
+<h3 class="text-surface/80 font-headline text-2xl md:text-3xl font-light tracking-[0.4em] uppercase mb-12 stagger-item stagger-3">AYURVEDA</h3>
+<div class="w-full flex flex-row justify-center items-center gap-12 mb-16 stagger-item stagger-4">
+<div class="flex items-center gap-4">
+<h3 class="text-surface font-headline text-3xl md:text-5xl font-extralight tracking-tight">Ayur</h3>
+<div class="h-px w-6 bg-surface/30"></div>
+<p class="text-surface-container-low font-label uppercase tracking-[0.3em] text-xs md:text-sm">Life</p>
+</div>
+<div class="w-px h-8 bg-surface/20"></div>
+<div class="flex items-center gap-4">
+<h3 class="text-surface font-headline text-3xl md:text-5xl font-extralight tracking-tight">Veda</h3>
+<div class="h-px w-6 bg-surface/30"></div>
+<p class="text-surface-container-low font-label uppercase tracking-[0.3em] text-xs md:text-sm">Science</p>
+</div>
+</div>
+<p class="text-surface-container-low font-body text-base md:text-lg leading-relaxed max-w-3xl font-light opacity-80 stagger-item stagger-5">
+                        Ayurveda is an ancient philosophy of health that focuses on balance — balance between body, mind, and environment. Rather than treating problems only when they appear, it emphasizes daily care, natural ingredients, and living in a way that keeps the body in harmony over time.
                     </p>
-<div class="w-full flex flex-row justify-around items-baseline gap-4">
-<div class="flex flex-col items-center flex-1">
-<h3 class="text-surface font-headline text-6xl md:text-8xl lg:text-9xl font-extralight tracking-tighter leading-none mb-4">Ayur</h3>
-<div class="h-px w-12 bg-surface/30 mb-4"></div>
-<p class="text-surface-container-low font-label uppercase tracking-[0.6em] text-sm md:text-lg">Life</p>
-</div>
-<div class="flex flex-col items-center flex-1">
-<h3 class="text-surface font-headline text-6xl md:text-8xl lg:text-9xl font-extralight tracking-tighter leading-none mb-4">Veda</h3>
-<div class="h-px w-12 bg-surface/30 mb-4"></div>
-<p class="text-surface-container-low font-label uppercase tracking-[0.6em] text-sm md:text-lg">Science</p>
-</div>
-</div>
 </div>
 </div>
 </section>
 <!-- Layer 1: Insight -->
-<section class="bg-surface-container-low py-32 px-8 overflow-hidden">
+<section class="bg-surface-container-low py-32 px-8 overflow-hidden reveal">
 <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row gap-16 items-start">
-<div class="md:w-1/3 sticky top-32">
+<div class="md:w-1/3 sticky top-32 stagger-item stagger-1">
 <span class="text-primary font-headline text-8xl font-black opacity-10 absolute -top-12 -left-4">01</span>
 <h3 class="relative text-on-surface font-headline text-4xl font-bold tracking-tight mb-6">Skincare today is overloaded with actives. Too many steps damage the skin barrier. People are constantly fixing problems caused by other products.</h3>
 <p class="text-on-surface-variant font-body leading-relaxed">
@@ -226,12 +259,12 @@
                     </p>
 </div>
 <div class="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-8">
-<div class="bg-surface p-10 rounded-xl space-y-4 shadow-sm">
+<div class="bg-surface p-10 rounded-xl space-y-4 shadow-sm stagger-item stagger-2">
 <span class="material-symbols-outlined text-primary text-4xl">warning</span>
 <h4 class="font-headline font-bold text-xl">Barrier Depletion</h4>
 <p class="text-on-surface-variant text-sm font-body">Synthetics often strip the skin's natural defense, leading to a cycle of perpetual repair.</p>
 </div>
-<div class="bg-surface p-10 rounded-xl space-y-4 shadow-sm translate-y-12">
+<div class="bg-surface p-10 rounded-xl space-y-4 shadow-sm translate-y-12 stagger-item stagger-3">
 <span class="material-symbols-outlined text-primary text-4xl">block</span>
 <h4 class="font-headline font-bold text-xl">Over-Treatment</h4>
 <p class="text-on-surface-variant text-sm font-body">Complexity in modern routines often masks the skin's innate ability to self-regulate.</p>
@@ -240,17 +273,17 @@
 </div>
 </section>
 <!-- Layer 2: Philosophy -->
-<section class="py-32 px-8 max-w-screen-2xl mx-auto">
+<section class="py-32 px-8 max-w-screen-2xl mx-auto reveal">
 <div class="text-center mb-24 max-w-3xl mx-auto">
-<span class="text-primary font-headline text-8xl font-black opacity-10 block">02</span>
-<h3 class="text-on-surface font-headline text-4xl md:text-5xl font-bold tracking-tight -mt-8">Skin is an ecosystem. Balance is its natural state.</h3>
-<div class="space-y-6 mt-8">
+<span class="text-primary font-headline text-8xl font-black opacity-[0.05] block stagger-item stagger-1">02</span>
+<h3 class="text-on-surface font-headline text-4xl md:text-5xl font-bold tracking-tight -mt-8 stagger-item stagger-2">Skin is an ecosystem. Balance is its natural state.</h3>
+<div class="space-y-6 mt-8 stagger-item stagger-3">
 <p class="text-primary font-label uppercase tracking-widest text-xs font-bold">The AYUNN Approach</p>
 <p class="text-on-surface-variant font-body leading-relaxed">Skin needs balance, not aggression. We believe skin performs best when it is supported, not forced. Not aggressive correction, but gentle alignment. Less interference means better skin. We prioritize consistency over intensity, ensuring your skin thrives in its most natural, quiet state.</p>
 <p class="text-on-surface font-headline text-xl font-semibold">Not more products. Just better ones.</p>
 </div>
 </div>
-<div class="relative h-[600px] rounded-2xl overflow-hidden group">
+<div class="relative h-[600px] rounded-2xl overflow-hidden group reveal stagger-item stagger-4">
 <img alt="misty deep forest with soft rays of light filtering through ancient mossy trees symbolizing a balanced ecosystem" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkNmZtsBfHTnvT15227oR91y3cl4B1p1QUju_4MaWeWAjLOijx08F7WFf9np2SMPVJEoSQUY9abLU7lPW4ESaC6uhUS2NDWornhbiMRcZZS6OAJwwfeT0cq9IjtQVzn5OHPjGE2Go1DbE60PNCE4OUvDNqPqd3UMkaPrlVLOm5mNzACnd9jqeGPMp1dfGOXtyghAb7q--wFQeXI-b4qDsG4W9Hg0eZmzm3Fm1dVuE8bAIOYQF66G49U4Ce2Y6p5xmoNy09CKgKk3M"/>
 <div class="absolute inset-0 bg-gradient-to-t from-on-surface/80 via-transparent to-transparent flex items-end p-12">
 <div class="max-w-xl text-surface">
@@ -261,9 +294,9 @@
 </div>
 </section>
 <!-- Layer 3: Execution - The Collection Section -->
-<section class="bg-surface py-32 px-8">
+<section class="bg-surface py-32 px-8 reveal">
 <div class="max-w-screen-2xl mx-auto">
-<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6 stagger-item stagger-1">
 <div class="max-w-2xl">
 <span class="text-primary font-headline text-8xl font-black opacity-10 block">03</span>
 <h3 class="text-on-surface font-headline text-4xl md:text-5xl font-bold tracking-tight -mt-8 mb-6">The Collection</h3>
@@ -275,7 +308,7 @@
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
 <!-- Product 1 -->
-<div class="group">
+<div class="group stagger-item stagger-2">
 <div class="aspect-[3/4] bg-surface-container-low rounded-xl overflow-hidden relative mb-6">
 <img alt="minimalist ceramic bottle of luxury body lotion on a warm sandstone pedestal with soft morning shadows" class="w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeFHMmg3FMaYJObzuR768xnkeo1K4jFolFsRcZfvisqMBi1SZnTrC9R5G_uhPIjJI0IiwIAvKRa9KyvW_bumVxpi_KUjtzWmT2jfmZTDeCiH57uBRPmYGbMgzhHZETOSrfkiq4Dy-DDr5QOmPrdt4OfkBsWWJJCzceXy47AB9VPL_f1_NYKwplwSvabkqFEdY-B_RH0WzcH25f0avpSAP3Yk6I3Nvk07vtCm7TetNiEptnZGD-CK5F8-Nkw1fgTEXaHEyrCCmCZrQ"/>
 <button class="absolute bottom-6 right-6 w-12 h-12 bg-surface rounded-full flex items-center justify-center shadow-md opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
@@ -287,7 +320,7 @@
 <button class="text-primary font-label text-[10px] uppercase tracking-[0.2em] font-bold border-b-2 border-primary/20 pb-1 group-hover:border-primary transition-all">See More</button>
 </div>
 <!-- Product 2 -->
-<div class="group translate-y-0 md:translate-y-12">
+<div class="group translate-y-0 md:translate-y-12 stagger-item stagger-3">
 <div class="aspect-[3/4] bg-surface-container rounded-xl overflow-hidden relative mb-6">
 <img alt="unlabeled minimalist sunscreen tube in a warm ochre tone resting on smooth river stones" class="w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZzrTQjijxrlcHF4X-EPHM-ETZs2iNADMUmiTnCXJNLvy4_uFicQHFnr0Fg1yMpN6oK4TEPZKgmYbWcuBWa99a02AUM387iiGT9bh6Copj75oEBamseUI3twkDdJUeyafRhxxRuDArbO9yziLzyWNjmeOSr1P4ykg1V6J6HKhZKR2u8V8sW0M6kaeEdMtUThZ4tXgY_CRy3Qh_H0tDzuk5sc2XRIP1RruNmaK2tAQq3cpUa8ad1QxbSKW9AbkNj8PVeNaFfqZxZrE"/>
 <button class="absolute bottom-6 right-6 w-12 h-12 bg-surface rounded-full flex items-center justify-center shadow-md opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
@@ -299,7 +332,7 @@
 <button class="text-primary font-label text-[10px] uppercase tracking-[0.2em] font-bold border-b-2 border-primary/20 pb-1 group-hover:border-primary transition-all">See More</button>
 </div>
 <!-- Product 3 -->
-<div class="group">
+<div class="group stagger-item stagger-4">
 <div class="aspect-[3/4] bg-surface-container-high rounded-xl overflow-hidden relative mb-6">
 <img alt="luxury frosted glass jar of facial moisturizer on a stack of terracotta tiles with soft natural light" class="w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuGuuEB_XPZYYXiNtMH8iY_P62mH-4vwPGvzm3_EYSZ68wq1QVl0IF42SxGw4AjXhmHRArpEs0JVCDXsIil22VfCAubYmUvxjqKf9B4ZrXdCeuysN9EjnhD0ZGUBERTPiPYEk92p4zX0HVk-jy_Z9cz1kzWtA52FJ6omMJUdiELC6dI1CqxZu-EcDEp1ixehpsc8wKRQLv4AmuJEF7P2qoz5cfLA5jE1iQllfXYnskGyQgi6UVI--9RqTf6NiBJi08-zL0yrAX03g"/>
 <button class="absolute bottom-6 right-6 w-12 h-12 bg-surface rounded-full flex items-center justify-center shadow-md opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
@@ -315,9 +348,32 @@
 </section>
 </main>
 <!-- Footer -->
-<footer class="dark:bg-[#231a08] w-full px-12 py-16 bg-surface-container-low border-t border-outline-variant/10">
-<div class="max-w-screen-2xl mx-auto flex justify-center items-center">
+<footer class="dark:bg-[#231a08] w-full px-12 py-16 bg-surface-container-low border-t border-outline-variant/10 reveal">
+<div class="max-w-screen-2xl mx-auto flex justify-center items-center stagger-item stagger-1">
 <span class="text-4xl font-bold tracking-tighter text-[#231a08] dark:text-[#fff8f2] italic">AYUNN</span>
 </div>
 </footer>
+<script>
+        // Intersection Observer for scroll-driven animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Once animated, we don't need to observe it anymore
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const revealElements = document.querySelectorAll('.reveal');
+            revealElements.forEach(el => revealObserver.observe(el));
+        });
+    </script>
 </body></html>
